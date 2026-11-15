@@ -1,0 +1,5 @@
+# Fetched or created by setup.sh; never commit.
+ckpt/
+.venv/
+.env.local
+__pycache__/

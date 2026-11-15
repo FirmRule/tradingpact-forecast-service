@@ -1,0 +1,10 @@
+# The versions the local preview was checked with (14-15 Nov 2026).
+torch==2.15.0
+numpy==2.5.4
+pandas==3.1.0
+fastapi==0.163.0
+pydantic==2.14.3
+uvicorn==0.54.0
+modal==1.6.4
+# `modal secret create --from-dotenv` (handoff step 2) needs it.
+python-dotenv==1.2.4
