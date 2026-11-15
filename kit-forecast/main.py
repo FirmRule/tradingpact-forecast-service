@@ -59,7 +59,12 @@ async def lifespan(_: FastAPI):
     if not TOKEN:
         raise RuntimeError("Set KIT_API_TOKEN.")
     engine = KitEngine(CKPT, device=DEVICE)
-    log.info("loaded KiT in %.1fs on %s", engine.load_seconds, DEVICE)
+    gpu = ""
+    if DEVICE == "cuda":  # which GPU Modal gave this container: an L4, or the A10G fallback
+        import torch  # already loaded by kit_engine
+
+        gpu = f" ({torch.cuda.get_device_name(0)})"
+    log.info("loaded KiT in %.1fs on %s%s", engine.load_seconds, DEVICE, gpu)
     state["engine"] = engine
     yield
 

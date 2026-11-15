@@ -1,4 +1,4 @@
-"""KiT forecast service on Modal (an NVIDIA L4 GPU, scales to zero).
+"""KiT forecast service on Modal (an NVIDIA L4 GPU, or an A10G when L4s are short; scales to zero).
 
 Same FastAPI app as the local preview (main.py), same contract as apps/kronos:
 POST /forecast, POST /forecast/stream, GET /health, bearer token.
@@ -61,7 +61,10 @@ weights = modal.Volume.from_name("kit-weights")
 
 
 @app.function(
-    gpu="L4",
+    # An L4 first; an A10G (similar fp32 speed, about $1.10/h against $0.80/h)
+    # when Modal has no L4 free. On 15 Nov 2026 L4s ran out for over half an
+    # hour and every cold forecast timed out. Billed per second either way.
+    gpu=["L4", "A10G"],
     volumes={"/weights": weights},
     secrets=[modal.Secret.from_name("kit-api-token")],
     # Stay warm two minutes after the last forecast, then scale to zero.

@@ -4,7 +4,7 @@ The source of the AI model service that draws the sampled price paths on Trading
 
 - `kit-forecast/main.py`: the HTTP service (FastAPI).
 - `kit-forecast/kit_engine.py`: turns a chart's candles into KiT's inputs and samples future candle paths.
-- `kit-forecast/modal_app.py`: runs the service on a Modal L4 GPU, which is how it is deployed.
+- `kit-forecast/modal_app.py`: runs the service on Modal, on an L4 GPU or an A10G when no L4 is free, which is how it is deployed.
 - `kit-forecast/vendor/KiT/`: KiT (https://github.com/Luciferbobo/KiT) at the commit in `COMMIT`, unmodified, with its licence and README.
 - `kronos/forecast.py`: the summary figures the service returns (the band across paths, the mean path, the share finishing higher).
 
