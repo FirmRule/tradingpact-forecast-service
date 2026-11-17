@@ -61,14 +61,18 @@ weights = modal.Volume.from_name("kit-weights")
 
 
 @app.function(
-    # An L4 first; an A10G (similar fp32 speed, about $1.10/h against $0.80/h)
-    # when Modal has no L4 free. On 15 Nov 2026 L4s ran out for over half an
-    # hour and every cold forecast timed out. Billed per second either way.
-    gpu=["L4", "A10G"],
+    # An A10G first (a forecast in about 20 s against the L4's 27 s, at about
+    # the same cost per forecast), an L4 when no A10G is free, and an L40S
+    # (dearer per hour) only when neither is: a shortage of one type, as on 15
+    # and 17 Nov 2026 when cold forecasts waited minutes for a GPU, no longer
+    # stalls the forecast. Billed per second whichever runs.
+    gpu=["A10G", "L4", "L40S"],
     volumes={"/weights": weights},
     secrets=[modal.Secret.from_name("kit-api-token")],
-    # Stay warm two minutes after the last forecast, then scale to zero.
-    scaledown_window=120,
+    # Stay warm 15 minutes after the last forecast, then scale to zero: a
+    # trader rechecking the forecast every few minutes meets a warm model
+    # instead of a cold start each time, and an idle Desk still costs nothing.
+    scaledown_window=900,
     timeout=600,
     max_containers=2,
 )
